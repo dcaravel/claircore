@@ -310,7 +310,7 @@ func (u *Updater) processChanges(ctx context.Context, w io.Writer, fp *fingerpri
 		if year < lookBackToYear {
 			continue
 		}
-		updatedTime, err := time.Parse(time.RFC3339, uTime)
+		updatedTime, err := parseTime(uTime)
 		if err != nil {
 			return fmt.Errorf("line %d: %w", l, err)
 		}
@@ -417,7 +417,7 @@ func (u *Updater) processDeletions(ctx context.Context, w io.Writer, fp *fingerp
 		}
 
 		cvePath, uTime := rec[0], rec[1]
-		updatedTime, err := time.Parse(time.RFC3339, uTime)
+		updatedTime, err := parseTime(uTime)
 		if err != nil {
 			return err
 		}
@@ -439,6 +439,14 @@ func (u *Updater) processDeletions(ctx context.Context, w io.Writer, fp *fingerp
 		return fmt.Errorf("error parsing the deletions.csv file: %w", err)
 	}
 	return nil
+}
+
+func parseTime(s string) (time.Time, error) {
+	t, err := time.Parse(time.RFC3339, s)
+	if err == nil {
+		return t, nil
+	}
+	return time.Parse("2006-01-02T15:04:05-0700", s)
 }
 
 func createDeletedJSON(cvePath string) ([]byte, error) {
