@@ -108,6 +108,14 @@ func TestVulnerable(t *testing.T) {
 			want:           false,
 		},
 		{
+			name:           "TimestampUnfixed",
+			packageVersion: "1742843776",
+			fixedInVersion: "",
+			repoCPE:        cpe.MustUnbind("cpe:/a:redhat:openshift_gitops:1.16::el8"),
+			vulnRepoCPE:    cpe.MustUnbind("cpe:/a:redhat:openshift_gitops:1.16::el8"),
+			want:           true,
+		},
+		{
 			name:           "TagOlder",
 			packageVersion: "v3.5.5-4",
 			fixedInVersion: "v3.5.7-8",
@@ -122,6 +130,14 @@ func TestVulnerable(t *testing.T) {
 			repoCPE:        cpe.MustUnbind("cpe:/a:redhat:quay:3::el8"),
 			vulnRepoCPE:    cpe.MustUnbind("cpe:/a:redhat:quay:3::el8"),
 			want:           false,
+		},
+		{
+			name:           "TagUnfixed",
+			packageVersion: "v3.5.9-2",
+			fixedInVersion: "",
+			repoCPE:        cpe.MustUnbind("cpe:/a:redhat:quay:3::el8"),
+			vulnRepoCPE:    cpe.MustUnbind("cpe:/a:redhat:quay:3::el8"),
+			want:           true,
 		},
 		{
 			name:           "TagCPEMismatch",
@@ -149,6 +165,7 @@ func TestVulnerable(t *testing.T) {
 				},
 			}
 			vuln := &claircore.Vulnerability{
+				Package:        &claircore.Package{},
 				FixedInVersion: tc.fixedInVersion,
 				Repo: &claircore.Repository{
 					Key:  RepositoryKey,
